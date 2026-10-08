@@ -4,7 +4,6 @@ import { useAppStore } from './store/appStore';
 import { AppShell } from './components/layout/AppShell';
 
 // Pages
-import { LandingPage } from './pages/LandingPage';
 import { CommandCenter } from './pages/CommandCenter';
 import { ImpactMap } from './pages/ImpactMap';
 import { Vulnerability } from './pages/Vulnerability';
@@ -20,7 +19,7 @@ import { FarmerDashboard } from './pages/FarmerDashboard';
 import { HealthcareDashboard } from './pages/HealthcareDashboard';
 import { Methodology } from './pages/Methodology';
 import { Settings } from './pages/Settings';
-import { LoginPage } from './pages/LoginPage';
+import MkLandingPage from './pages/MkLandingPage';
 
 export const App: React.FC = () => {
   const { checkBackendHealth } = useAppStore();
@@ -35,8 +34,8 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         {/* Public Landing Page & Role Entry */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<MkLandingPage />} />
+        <Route path="/login" element={<MkLandingPage />} />
 
         {/* Platform Core Layout */}
         <Route element={<AppShell />}>
