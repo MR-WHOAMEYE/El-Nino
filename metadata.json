@@ -1,0 +1,6 @@
+{
+  "name": "3D ENSO Climate Simulator & Equity Decision Engine",
+  "description": "Interactive 3D simulation of El Niño / Southern Oscillation (trade winds, warm pool migration, thermocline tilt, La Niña) and climate resilience equity decision engine for India and Southeast Asia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

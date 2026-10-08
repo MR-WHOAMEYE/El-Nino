@@ -1,0 +1,135 @@
+[
+  {
+    "id": "india-north",
+    "name": "Northern India",
+    "labelAnchor": [77.2, 28.6],
+    "bounds": { "minLon": 72.0, "maxLon": 82.0, "minLat": 24.5, "maxLat": 36.0 },
+    "note": "Indo-Gangetic plains; summer monsoon deficit and pre-monsoon heat domes."
+  },
+  {
+    "id": "india-west",
+    "name": "Western India",
+    "labelAnchor": [73.5, 19.5],
+    "bounds": { "minLon": 68.0, "maxLon": 77.0, "minLat": 15.0, "maxLat": 24.5 },
+    "note": "Maharashtra & Gujarat coastal/inland belt vulnerable to delayed monsoon onset."
+  },
+  {
+    "id": "india-south-east",
+    "name": "Southeast India",
+    "labelAnchor": [80.2, 13.0],
+    "bounds": { "minLon": 77.0, "maxLon": 83.5, "minLat": 8.0, "maxLat": 17.0 },
+    "note": "Coromandel coast; enhanced rainfall during El Niño Northeast Monsoon (Oct-Dec)."
+  },
+  {
+    "id": "india-east",
+    "name": "Eastern India",
+    "labelAnchor": [86.5, 23.0],
+    "bounds": { "minLon": 82.0, "maxLon": 90.0, "minLat": 18.0, "maxLat": 27.5 },
+    "note": "Bengal basin and Odisha coast sensitive to reduced Bay of Bengal depressions."
+  },
+  {
+    "id": "south-asia-other",
+    "name": "South Asia Regional",
+    "labelAnchor": [88.0, 24.0],
+    "bounds": { "minLon": 60.0, "maxLon": 92.5, "minLat": 5.0, "maxLat": 35.0 },
+    "note": "Neighboring South Asian river basins including Bangladesh, Sri Lanka, and Pakistan."
+  },
+  {
+    "id": "indonesia",
+    "name": "Maritime Indonesia",
+    "labelAnchor": [112.0, -3.0],
+    "bounds": { "minLon": 95.0, "maxLon": 141.0, "minLat": -11.0, "maxLat": 6.0 },
+    "note": "Equatorial Pacific warm pool shift drives severe drought, peatland fire haze, and crop stress."
+  },
+  {
+    "id": "philippines",
+    "name": "Philippines",
+    "labelAnchor": [121.8, 14.2],
+    "bounds": { "minLon": 116.5, "maxLon": 127.0, "minLat": 4.5, "maxLat": 21.5 },
+    "note": "Typhoon tracks steer into central Pacific; prolonged dry spells follow El Niño."
+  },
+  {
+    "id": "indochina",
+    "name": "Indochina Peninsula",
+    "labelAnchor": [101.5, 14.5],
+    "bounds": { "minLon": 92.5, "maxLon": 109.5, "minLat": 5.5, "maxLat": 24.0 },
+    "note": "Lower Mekong & Chao Phraya basins experiencing reduced summer monsoon and dry-season heat."
+  },
+  {
+    "id": "australia-north",
+    "name": "Northern Australia",
+    "labelAnchor": [133.0, -16.0],
+    "bounds": { "minLon": 120.0, "maxLon": 145.0, "minLat": -22.0, "maxLat": -10.0 },
+    "note": "Suppressed tropical wet season and delayed monsoon onset during El Niño."
+  },
+  {
+    "id": "australia-east",
+    "name": "Eastern Australia",
+    "labelAnchor": [148.0, -30.0],
+    "bounds": { "minLon": 138.0, "maxLon": 154.0, "minLat": -39.0, "maxLat": -22.0 },
+    "note": "Murray-Darling agricultural heartland prone to severe droughts and bushfire seasons."
+  },
+  {
+    "id": "australia-west",
+    "name": "Western Australia",
+    "labelAnchor": [120.0, -26.0],
+    "bounds": { "minLon": 112.0, "maxLon": 129.0, "minLat": -35.5, "maxLat": -20.0 },
+    "note": "Modest drying anomalies modulated by southeastern Indian Ocean temperatures."
+  },
+  {
+    "id": "papua-and-pacific-islands",
+    "name": "Papua & SW Pacific",
+    "labelAnchor": [146.0, -6.5],
+    "bounds": { "minLon": 140.0, "maxLon": 180.0, "minLat": -20.0, "maxLat": 2.0 },
+    "note": "Highland frost and severe water deficits during eastward migration of warm pool."
+  },
+  {
+    "id": "peru-ecuador-coast",
+    "name": "Peru & Ecuador Coast",
+    "labelAnchor": [-78.0, -8.0],
+    "bounds": { "minLon": -83.0, "maxLon": -75.0, "minLat": -18.0, "maxLat": 2.0 },
+    "note": "Eastern Pacific warming chokes upwelling and unleashes episodic torrential rain and mudslides."
+  },
+  {
+    "id": "brazil-north-amazon",
+    "name": "Amazon Basin & North Brazil",
+    "labelAnchor": [-60.0, -3.5],
+    "bounds": { "minLon": -74.0, "maxLon": -45.0, "minLat": -12.0, "maxLat": 5.0 },
+    "note": "Suppressed convection over tropical rainforest triggering severe river low-flow extremes."
+  },
+  {
+    "id": "brazil-south-argentina",
+    "name": "SE South America & Pampas",
+    "labelAnchor": [-58.0, -32.0],
+    "bounds": { "minLon": -66.0, "maxLon": -48.0, "minLat": -40.0, "maxLat": -22.0 },
+    "note": "Enhanced subtropical jet stream drives surplus precipitation and crop flooding."
+  },
+  {
+    "id": "us-southwest-and-mexico",
+    "name": "US Southwest & Mexico",
+    "labelAnchor": [-106.0, 29.0],
+    "bounds": { "minLon": -125.0, "maxLon": -95.0, "minLat": 18.0, "maxLat": 38.0 },
+    "note": "Southern tier storm track deflection brings winter moisture and storm surges."
+  },
+  {
+    "id": "east-africa",
+    "name": "Greater Horn of Africa",
+    "labelAnchor": [38.0, 3.0],
+    "bounds": { "minLon": 30.0, "maxLon": 52.0, "minLat": -5.0, "maxLat": 12.0 },
+    "note": "Short Rains (Oct-Dec) amplified by western Indian Ocean teleconnections."
+  },
+  {
+    "id": "southern-africa",
+    "name": "Southern Africa",
+    "labelAnchor": [26.0, -24.0],
+    "bounds": { "minLon": 15.0, "maxLon": 36.0, "minLat": -35.0, "maxLat": -15.0 },
+    "note": "Summer rainfall deficits resulting in widespread cereal crop failures and water rationing."
+  },
+  {
+    "id": "other-land",
+    "name": "Global Continental Land",
+    "labelAnchor": [10.0, 50.0],
+    "bounds": { "minLon": -180.0, "maxLon": 180.0, "minLat": -60.0, "maxLat": 85.0 },
+    "note": "Baseline continental terrain without direct primary tropical ENSO forcing."
+  }
+]
