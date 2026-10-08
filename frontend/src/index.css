@@ -1,0 +1,233 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* ========================================================
+   CLIMA-SHIELD DESIGN SYSTEM
+   ORGANIC EDITORIAL & CURVY CLIMATE RESILIENCE PALETTE
+   Exact Match to Screenshots: Deep Forest, Soft Mint & Warm Linen
+   ======================================================== */
+
+:root[data-theme="light"] {
+  --bg: #F4F6F1;
+  --surface: #FFFFFF;
+  --surface-raised: #FAFAF7;
+  --border: #DFE5DE;
+  --border-light: #EBF0EA;
+  --text: #0E201B;
+  --text-muted: #556E65;
+  --brand: #1E4D41;
+  --brand-hover: #153A31;
+  --brand-secondary: #427B6E;
+  --brand-mint: #C8DFDB;
+  --brand-mint-light: #E4EFEA;
+  --brand-subtle: #E8F1EC;
+  --focus: #2B6657;
+
+  /* Risk Scale */
+  --risk-low: #3E8573;
+  --risk-low-bg: #E8F4F0;
+  --risk-guarded: #4E8E81;
+  --risk-guarded-bg: #EDF6F3;
+  --risk-elevated: #C68032;
+  --risk-elevated-bg: #FAF2E8;
+  --risk-high: #D15A42;
+  --risk-high-bg: #FDF0ED;
+  --risk-critical: #9E262C;
+  --risk-critical-bg: #FBEAEC;
+}
+
+:root[data-theme="dark"] {
+  --bg: #091A16;
+  --surface: #0E241F;
+  --surface-raised: #14332B;
+  --border: #1C4238;
+  --border-light: #16362E;
+  --text: #F3F6F1;
+  --text-muted: #8EA89F;
+  --brand: #C8DFDB;
+  --brand-hover: #DCEDE7;
+  --brand-secondary: #8AB8AA;
+  --brand-mint: #C8DFDB;
+  --brand-mint-light: #1A3C33;
+  --brand-subtle: #132E27;
+  --focus: #C8DFDB;
+
+  /* Risk Scale Dark */
+  --risk-low: #5AA693;
+  --risk-low-bg: #0E2A23;
+  --risk-guarded: #75BAA8;
+  --risk-guarded-bg: #12332B;
+  --risk-elevated: #E5A355;
+  --risk-elevated-bg: #2C2114;
+  --risk-high: #E26F5A;
+  --risk-high-bg: #321915;
+  --risk-critical: #FF5A68;
+  --risk-critical-bg: #381216;
+}
+
+:root {
+  --heat: #D15A42;
+  --water: #3E8573;
+  --flood: #5398B5;
+  --drought: #C98B3C;
+  --resilience: #4A9684;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+/* Editorial Serif for human, authentic emphasis */
+.font-editorial {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+}
+
+/* Tabular numerals for statistics & coordinates */
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Subtle, polished focus ring */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Curvy organic cards (20px to 24px border radius as in user reference) */
+.card-clean {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px -2px rgba(11, 27, 23, 0.04);
+}
+
+.card-curvy {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 6px 24px -4px rgba(11, 27, 23, 0.06);
+}
+
+.card-raised {
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+/* Soft Curvy Pill Buttons */
+.btn-pill-mint {
+  background-color: #C8DFDB;
+  color: #091A16;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(200, 223, 219, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-pill-mint:hover {
+  background-color: #D6EAE5;
+  box-shadow: 0 0 24px rgba(200, 223, 219, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Leaflet Map overrides for modern styling */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  background: var(--surface-raised);
+  border-radius: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  font-family: inherit;
+}
+
+.leaflet-popup-tip {
+  background: var(--surface);
+}
+
+/* Ambient Rain Overlay for the Hero Section */
+.rain-backdrop {
+  background-image: 
+    radial-gradient(ellipse at 50% -20%, rgba(200, 223, 219, 0.08), transparent 70%),
+    linear-gradient(180deg, rgba(9, 26, 22, 0.95) 0%, rgba(9, 26, 22, 0.98) 100%);
+}
+
+.rain-drops {
+  background-image: repeating-linear-gradient(
+    105deg,
+    rgba(200, 223, 219, 0.06) 0px,
+    rgba(200, 223, 219, 0.06) 1px,
+    transparent 1px,
+    transparent 36px
+  );
+  animation: rainShift 0.8s linear infinite;
+}
+
+@keyframes rainShift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 10px 50px;
+  }
+}
+
+/* Pulse animation for hotspot */
+@keyframes pulseMarker {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+}
+
+.pulse-hotspot-pin {
+  animation: pulseMarker 1.8s infinite ease-in-out;
+}
