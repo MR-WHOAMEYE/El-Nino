@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest-dark: #0B2F24;
+  --color-forest-secondary: #164A38;
+  --color-forest-sage: #78A98B;
+  --color-forest-mint: #DCEFE5;
+
+  --color-nature-bg: #F6F7F3;
+  --color-nature-text: #17251F;
+  --color-nature-muted: #65746C;
+  --color-nature-border: #DCE3DD;
+
+  --color-risk-low: #3F8F68;
+  --color-risk-moderate: #B78B35;
+  --color-risk-high: #C96A3D;
+  --color-risk-critical: #A94442;
+
+  --font-heading: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-nature-bg);
+    color: var(--color-nature-text);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Unified font style across landing page */
+.landing-root,
+.landing-root h1,
+.landing-root h2,
+.landing-root h3,
+.landing-root h4,
+.landing-root h5,
+.landing-root h6,
+.landing-root p,
+.landing-root span,
+.landing-root div,
+.landing-root button,
+.landing-root input,
+.landing-root label,
+.landing-root a,
+.landing-root footer {
+  font-family: var(--font-heading) !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 169, 139, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 169, 139, 0.6);
+}
+

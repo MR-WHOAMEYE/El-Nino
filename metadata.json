@@ -1,0 +1,6 @@
+{
+  "name": "EL-NEXUS - Climate Resilience Intelligence",
+  "description": "An intelligent interface for understanding El Niño climate exposure, simulating interventions, and driving equitable resilience decisions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
