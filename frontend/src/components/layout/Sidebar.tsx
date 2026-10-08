@@ -20,6 +20,8 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Network,
+  Eye,
 } from 'lucide-react';
 
 interface NavItemDef {
@@ -50,6 +52,8 @@ export const Sidebar: React.FC = () => {
     {
       title: 'UNDERSTAND',
       items: [
+        { label: 'Consequence Graph', path: '/consequence-graph', icon: Network, roles: ['Government', 'Admin'] },
+        { label: 'Invisible Population', path: '/invisible-population', icon: Eye, roles: ['Government', 'Admin', 'Healthcare'] },
         { label: 'Community Vulnerability', path: '/vulnerability', icon: ShieldAlert, roles: ['Government', 'Admin'] },
         { label: 'Equity Priorities', path: '/equity-priorities', icon: ListOrdered, roles: ['Government', 'Healthcare', 'Admin'] },
         { label: 'Historical Climate', path: '/historical-climate', icon: History, roles: ['Government', 'Admin'] },
@@ -61,6 +65,7 @@ export const Sidebar: React.FC = () => {
       items: [
         { label: 'Scenario Lab', path: '/scenario-lab', icon: SlidersHorizontal, roles: ['Government', 'Admin'] },
         { label: 'Resource Optimizer', path: '/resource-optimizer', icon: Coins, roles: ['Government', 'Admin'] },
+        { label: 'Resilience Ledger', path: '/resilience-ledger', icon: Activity, roles: ['Government', 'Admin'] },
       ],
     },
     {

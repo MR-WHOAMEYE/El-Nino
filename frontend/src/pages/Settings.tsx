@@ -1,7 +1,9 @@
 import React from 'react';
 import { useAppStore } from '../store/appStore';
 import { UserRole } from '../types';
-import { Settings as SettingsIcon, Database, RefreshCw, Sun, Moon, Laptop, ShieldCheck } from 'lucide-react';
+import { Settings as SettingsIcon, Database, RefreshCw, Sun, Moon, Laptop, Globe } from 'lucide-react';
+import { LanguageSelector } from '../components/common/LanguageSelector';
+import { t } from '../i18n/translations';
 
 export const Settings: React.FC = () => {
   const {
@@ -118,6 +120,18 @@ export const Settings: React.FC = () => {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Language Localization Card */}
+      <div className="border border-[var(--border)] rounded-[6px] bg-[var(--surface)] p-5 space-y-4">
+        <div className="flex items-center gap-2 font-semibold text-sm text-[var(--text)] pb-2 border-b border-[var(--border)]">
+          <Globe size={16} className="text-[var(--brand)]" />
+          <span>Regional Language & Localization / மொழி / भाषा</span>
+        </div>
+        <p className="text-xs text-[var(--text-muted)]">
+          Select your preferred interface language. Clima-Shield supports 6 regional languages across all dashboards, alerts, and spatial decision consoles.
+        </p>
+        <LanguageSelector variant="pills" showRegion={true} />
       </div>
 
       {/* Theme Card */}

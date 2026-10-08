@@ -4,9 +4,26 @@ import { useAppStore } from '../../store/appStore';
 import { CHENNAI_WARDS_GEOJSON, DEMO_REGIONS } from '../../data/demoData';
 import { Flame, Layers } from 'lucide-react';
 
+export type MapLayerType =
+  | 'overall'
+  | 'heat'
+  | 'water'
+  | 'health'
+  | 'flood'
+  | 'vulnerability'
+  | 'resilience'
+  | 'consequence'
+  | 'invisible_pop'
+  | 'confidence'
+  | 'blind_spots'
+  | 'community_reports'
+  | 'conflict'
+  | 'intervention_coverage'
+  | 'resilience_change';
+
 interface LeafletClimateMapProps {
   height?: string;
-  activeLayer?: 'overall' | 'heat' | 'water' | 'health' | 'flood' | 'vulnerability' | 'resilience';
+  activeLayer?: MapLayerType;
   onSelectWard?: (id: string) => void;
   showHotspots?: boolean;
 }
@@ -39,6 +56,13 @@ export const LeafletClimateMap: React.FC<LeafletClimateMapProps> = ({
         case 'flood': value = featureProps.flood ?? 55; break;
         case 'vulnerability': value = featureProps.vulnerability ?? 70; break;
         case 'resilience': value = featureProps.resilience ?? 50; break;
+        case 'consequence': value = (featureProps.heat ?? 75) + 6; break;
+        case 'invisible_pop': value = (featureProps.vulnerability ?? 70) > 75 ? 93 : 84; break;
+        case 'confidence': value = 71; break;
+        case 'blind_spots': value = wardId.includes('NORTH') || featureProps.id === 'Ward 42' ? 88 : 55; break;
+        case 'conflict': value = wardId.includes('NORTH') || featureProps.id === 'Ward 42' ? 92 : 45; break;
+        case 'intervention_coverage': value = 78; break;
+        case 'resilience_change': value = 67; break;
         case 'overall':
         default:
           value = featureProps.risk ?? 75;
@@ -53,6 +77,13 @@ export const LeafletClimateMap: React.FC<LeafletClimateMapProps> = ({
         case 'flood': value = reg.flood_risk; break;
         case 'vulnerability': value = reg.vulnerability; break;
         case 'resilience': value = reg.resilience; break;
+        case 'consequence': value = reg.heat_risk + 5; break;
+        case 'invisible_pop': value = wardId.includes('NORTH') ? 93 : 86; break;
+        case 'confidence': value = 71; break;
+        case 'blind_spots': value = 78; break;
+        case 'conflict': value = wardId.includes('NORTH') ? 92 : 45; break;
+        case 'intervention_coverage': value = 82; break;
+        case 'resilience_change': value = reg.resilience + 14; break;
         case 'overall':
         default:
           value = reg.overall_impact;
@@ -62,14 +93,20 @@ export const LeafletClimateMap: React.FC<LeafletClimateMapProps> = ({
 
     // Time scrubber progression (+30d, +60d, +90d adds gradual heat/stress)
     const timeDelta = timeScrubberDay > 0 ? Math.floor((timeScrubberDay / 90) * 8) : 0;
-    if (activeLayer !== 'resilience') {
+    if (activeLayer !== 'resilience' && activeLayer !== 'resilience_change' && activeLayer !== 'confidence') {
       value = Math.min(99, value + timeDelta);
     }
 
-    if (activeLayer === 'resilience') {
+    if (activeLayer === 'resilience' || activeLayer === 'resilience_change') {
       if (value >= 65) return '#4A8C80';
       if (value >= 50) return '#66A3BF';
       return '#3368A0';
+    }
+
+    if (activeLayer === 'confidence') {
+      if (value >= 80) return '#4A8C80';
+      if (value >= 65) return '#66A3BF';
+      return '#E3963E';
     }
 
     if (value >= 85) return '#D15A42'; // Critical high alert

@@ -21,6 +21,9 @@ import { HealthcareDashboard } from './pages/HealthcareDashboard';
 import { Methodology } from './pages/Methodology';
 import { Settings } from './pages/Settings';
 import { LoginPage } from './pages/LoginPage';
+import { ConsequenceGraphPage } from './pages/ConsequenceGraph';
+import { InvisiblePopulationPage } from './pages/InvisiblePopulation';
+import { ResilienceLedgerPage } from './pages/ResilienceLedger';
 
 export const App: React.FC = () => {
   const { checkBackendHealth } = useAppStore();
@@ -43,12 +46,15 @@ export const App: React.FC = () => {
           <Route path="/command-center" element={<CommandCenter />} />
           <Route path="/impact-map" element={<ImpactMap />} />
           <Route path="/vulnerability" element={<Vulnerability />} />
+          <Route path="/consequence-graph" element={<ConsequenceGraphPage />} />
+          <Route path="/invisible-population" element={<InvisiblePopulationPage />} />
           <Route path="/equity-priorities" element={<EquityPriorities />} />
           <Route path="/scenario-lab" element={<ScenarioLab />} />
           <Route path="/resource-optimizer" element={<ResourceOptimizer />} />
           <Route path="/community-intelligence" element={<CommunityIntelligence />} />
           <Route path="/historical-climate" element={<HistoricalClimate />} />
           <Route path="/resilience-index" element={<ResilienceIndex />} />
+          <Route path="/resilience-ledger" element={<ResilienceLedgerPage />} />
           <Route path="/climate-sos" element={<ClimateSOS />} />
           <Route path="/citizen" element={<CitizenDashboard />} />
           <Route path="/agriculture" element={<FarmerDashboard />} />

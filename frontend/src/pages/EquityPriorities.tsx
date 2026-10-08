@@ -167,23 +167,33 @@ export const EquityPriorities: React.FC = () => {
                         </div>
                       ))}
                     </div>
+
+                    {/* FEATURE 7: Why this location is prioritized */}
+                    <div className="mt-2.5 p-2 rounded bg-[var(--surface-2)] border border-[var(--border)] text-[11px] text-[var(--text)]">
+                      <strong className="text-[var(--brand)]">Why this location is prioritized:</strong>{' '}
+                      Hazard exposure ({item.risk}) is compounded by high social sensitivity ({item.vulnerability}) and an infrastructure deficit ({Math.min(95, 100 - item.adaptive_capacity + 18)}), resulting in a normalized {item.priority_level} Equity Priority score.
+                    </div>
                   </div>
                 </div>
 
-                {/* Right: Scores & Action Shortcuts */}
-                <div className="flex items-center gap-4 self-end lg:self-center font-mono-numbers text-xs">
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                {/* Right: Scores (Risk × Vuln × Adaptive Capacity × Infrastructure Gap) */}
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 font-mono-numbers text-xs">
+                  <div className="grid grid-cols-4 gap-2 text-center">
                     <div className="p-2 rounded bg-[var(--surface-raised)] border border-[var(--border)]">
-                      <span className="text-[10px] text-[var(--text-muted)] block">Risk</span>
+                      <span className="text-[9px] text-[var(--text-muted)] block uppercase">Risk</span>
                       <span className="text-sm font-bold text-[var(--critical)]">{item.risk}</span>
                     </div>
                     <div className="p-2 rounded bg-[var(--surface-raised)] border border-[var(--border)]">
-                      <span className="text-[10px] text-[var(--text-muted)] block">Vuln</span>
+                      <span className="text-[9px] text-[var(--text-muted)] block uppercase">Vuln</span>
                       <span className="text-sm font-bold text-[var(--text)]">{item.vulnerability}</span>
                     </div>
                     <div className="p-2 rounded bg-[var(--surface-raised)] border border-[var(--border)]">
-                      <span className="text-[10px] text-[var(--text-muted)] block">Adapt</span>
+                      <span className="text-[9px] text-[var(--text-muted)] block uppercase">Adaptive</span>
                       <span className="text-sm font-bold text-[var(--brand)]">{item.adaptive_capacity}</span>
+                    </div>
+                    <div className="p-2 rounded bg-[var(--surface-raised)] border border-[var(--border)]">
+                      <span className="text-[9px] text-[var(--text-muted)] block uppercase">Infra Gap</span>
+                      <span className="text-sm font-bold text-[#D15A42]">{Math.min(95, 100 - item.adaptive_capacity + 18)}</span>
                     </div>
                   </div>
 

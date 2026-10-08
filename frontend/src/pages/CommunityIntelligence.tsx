@@ -1,15 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/appStore';
-import { CommunityReport } from '../types';
+import {
+  CommunityReport,
+  ModelCommunityConflict,
+  EvidenceOverview,
+  DataBlindSpot
+} from '../types';
 import { DataMetadataFooter } from '../components/common/DataMetadataFooter';
 import { LoadingState } from '../components/common/StateViews';
-import { Users, AlertTriangle, Send, MapPin, Clock, Plus, Flame, Droplets, CheckCircle2 } from 'lucide-react';
+import { ModelCommunityConflictAlert } from '../components/intelligence/ModelCommunityConflictAlert';
+import {
+  Users,
+  AlertTriangle,
+  Send,
+  MapPin,
+  Clock,
+  Plus,
+  Flame,
+  Droplets,
+  CheckCircle2,
+  Sparkles,
+  Bot,
+  Radio,
+  Compass
+} from 'lucide-react';
+import {
+  DEMO_MODEL_COMMUNITY_CONFLICTS,
+  DEMO_EVIDENCE_OVERVIEW,
+  DEMO_DATA_BLIND_SPOTS
+} from '../data/demoData';
 
 export const CommunityIntelligence: React.FC = () => {
   const { selectedRegion, getProvider } = useAppStore();
   const provider = getProvider();
 
   const [reports, setReports] = useState<CommunityReport[]>([]);
+  const [conflicts, setConflicts] = useState<ModelCommunityConflict[]>([]);
+  const [evidence, setEvidence] = useState<EvidenceOverview | undefined>(undefined);
+  const [blindSpots, setBlindSpots] = useState<DataBlindSpot[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -17,25 +45,59 @@ export const CommunityIntelligence: React.FC = () => {
   // New report form state
   const [category, setCategory] = useState<CommunityReport['category']>('Water shortage');
   const [severity, setSeverity] = useState<CommunityReport['severity']>('severe');
-  const [locationName, setLocationName] = useState('');
-  const [description, setDescription] = useState('');
+  const [locationName, setLocationName] = useState('Ward 42 / Vyasarpadi Market');
+  const [description, setDescription] = useState(
+    "Water hasn't arrived for three days and nearby streets are also affected."
+  );
+
+  // Feature 11: Community Memory Layer NLP extraction state
+  const [nlpAnalysis, setNlpAnalysis] = useState<{
+    event: string;
+    severity: string;
+    duration: string;
+    location_extracted: string;
+    affected_issue: string;
+  } | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-    async function loadReports() {
+    async function loadData() {
       try {
         setLoading(true);
-        const res = await provider.getCommunityReports();
-        if (isMounted && res.success) {
-          setReports(res.data);
+        const [repRes, confRes, evRes, blindRes] = await Promise.all([
+          provider.getCommunityReports(),
+          provider.getModelCommunityConflicts(selectedRegion.id),
+          provider.getEvidenceOverview(selectedRegion.id),
+          provider.getDataBlindSpots(selectedRegion.id),
+        ]);
+        if (isMounted) {
+          if (repRes.success) setReports(repRes.data);
+          if (confRes.success) setConflicts(confRes.data);
+          if (evRes.success) setEvidence(evRes.data);
+          if (blindRes.success) setBlindSpots(blindRes.data);
         }
       } finally {
         if (isMounted) setLoading(false);
       }
     }
-    loadReports();
+    loadData();
     return () => { isMounted = false; };
-  }, [provider]);
+  }, [provider, selectedRegion.id]);
+
+  // NLP extraction trigger on description change
+  useEffect(() => {
+    if (!description.trim()) {
+      setNlpAnalysis(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const res = await provider.classifyCommunityReportNLP(description);
+      if (res.success) {
+        setNlpAnalysis(res.data);
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [description, provider]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +159,15 @@ export const CommunityIntelligence: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* FEATURE 5 & 12: MODEL vs COMMUNITY CONFLICT DETECTOR & EVIDENCE OVERVIEW */}
+      <ModelCommunityConflictAlert
+        conflicts={conflicts}
+        evidence={evidence}
+        onVerifyField={(id) => {
+          alert(`Field verification ticket #TKT-${id} created and dispatched to Municipal Disaster Management Unit.`);
+        }}
+      />
 
       {/* Clustered Hotspot Alert Banner (Rule Section 31) */}
       <div className="p-4 rounded-[6px] border border-[var(--critical)] bg-[var(--surface)] pattern-hatch-critical flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-mono-numbers">
@@ -257,6 +328,22 @@ export const CommunityIntelligence: React.FC = () => {
                     className="w-full p-2 rounded-[4px] border border-[var(--border)] bg-[var(--surface-2)] text-[var(--text)] font-sans"
                   />
                 </div>
+
+                {/* FEATURE 11: Real-time NLP Community Memory Layer Classification */}
+                {nlpAnalysis && (
+                  <div className="p-3 rounded-[4px] bg-[var(--brand-subtle)] border border-[var(--brand)]/30 space-y-1.5 text-xs font-mono-numbers">
+                    <div className="flex items-center gap-1.5 text-[var(--brand)] font-semibold">
+                      <Sparkles size={13} />
+                      <span>AI/NLP Community Memory Feature Extraction</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-[11px] text-[var(--text)]">
+                      <div><span className="text-[var(--text-muted)]">Extracted Event:</span> <strong className="text-[var(--brand)]">{nlpAnalysis.event}</strong></div>
+                      <div><span className="text-[var(--text-muted)]">Severity:</span> <strong className="text-[#D15A42]">{nlpAnalysis.severity}</strong></div>
+                      <div><span className="text-[var(--text-muted)]">Duration:</span> <strong className="text-[var(--text)]">{nlpAnalysis.duration}</strong></div>
+                      <div><span className="text-[var(--text-muted)]">Affected Issue:</span> <strong className="text-[var(--text)]">{nlpAnalysis.affected_issue}</strong></div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="pt-2 flex justify-end gap-2">
                   <button

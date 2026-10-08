@@ -11,7 +11,18 @@ import {
   AIAdviceRequest,
   AIAdviceResponse,
   Alert,
-  CommunityReport
+  CommunityReport,
+  ConsequenceGraphData,
+  InvisiblePopulationData,
+  ConfidenceMetadata,
+  DataBlindSpot,
+  ModelCommunityConflict,
+  EvidenceOverview,
+  InterventionPortfolio,
+  CounterfactualScenarioResult,
+  ResilienceLedgerEntry,
+  ResponseCapacityData,
+  TimeMachineData
 } from '../types';
 import { apiClient } from './apiClient';
 import {
@@ -23,7 +34,18 @@ import {
   DEMO_REPORTS,
   DEMO_SCENARIO_BASELINE,
   DEMO_RESOURCE_OPTIMIZATION,
-  DEMO_AI_ADVICE
+  DEMO_AI_ADVICE,
+  DEMO_CONSEQUENCE_GRAPHS,
+  DEMO_INVISIBLE_POPULATION,
+  DEMO_CONFIDENCE_METADATA,
+  DEMO_DATA_BLIND_SPOTS,
+  DEMO_MODEL_COMMUNITY_CONFLICTS,
+  DEMO_EVIDENCE_OVERVIEW,
+  DEMO_INTERVENTION_PORTFOLIOS,
+  DEMO_COUNTERFACTUAL_SCENARIOS,
+  DEMO_RESILIENCE_LEDGER,
+  DEMO_RESPONSE_CAPACITY,
+  DEMO_TIME_MACHINE
 } from '../data/demoData';
 
 export interface IDataProvider {
@@ -39,6 +61,26 @@ export interface IDataProvider {
   getAlerts(): Promise<ApiResponse<Alert[]>>;
   getCommunityReports(): Promise<ApiResponse<CommunityReport[]>>;
   submitCommunityReport(report: Omit<CommunityReport, 'id' | 'timestamp'>): Promise<ApiResponse<CommunityReport>>;
+
+  // NEW CLIMATE INTELLIGENCE LAYER METHODS
+  getConsequenceGraph(regionId: string): Promise<ApiResponse<ConsequenceGraphData>>;
+  getInvisiblePopulation(regionId: string): Promise<ApiResponse<InvisiblePopulationData>>;
+  getConfidenceMetadata(regionId: string): Promise<ApiResponse<ConfidenceMetadata>>;
+  getDataBlindSpots(regionId: string): Promise<ApiResponse<DataBlindSpot[]>>;
+  getModelCommunityConflicts(regionId: string): Promise<ApiResponse<ModelCommunityConflict[]>>;
+  getEvidenceOverview(regionId: string): Promise<ApiResponse<EvidenceOverview>>;
+  optimizeInterventionPortfolios(budget: number, regionId?: string): Promise<ApiResponse<InterventionPortfolio[]>>;
+  getCounterfactualScenario(regionId?: string): Promise<ApiResponse<CounterfactualScenarioResult>>;
+  getResilienceLedger(regionId?: string): Promise<ApiResponse<ResilienceLedgerEntry[]>>;
+  getResponseCapacity(regionId?: string): Promise<ApiResponse<ResponseCapacityData>>;
+  getTimeMachineData(regionId?: string): Promise<ApiResponse<TimeMachineData>>;
+  classifyCommunityReportNLP(text: string): Promise<ApiResponse<{
+    event: string;
+    severity: string;
+    duration: string;
+    location_extracted: string;
+    affected_issue: string;
+  }>>;
 }
 
 const createDemoMeta = (confidence: 'low' | 'moderate' | 'high' = 'moderate') => ({
@@ -217,6 +259,174 @@ export class DemoDataProvider implements IDataProvider {
       metadata: createDemoMeta('moderate'),
     };
   }
+
+  // --- NEW CLIMATE INTELLIGENCE LAYER (DEMO IMPLEMENTATIONS) ---
+
+  async getConsequenceGraph(regionId: string): Promise<ApiResponse<ConsequenceGraphData>> {
+    const graph = DEMO_CONSEQUENCE_GRAPHS[regionId] || DEMO_CONSEQUENCE_GRAPHS['TN-CHN'];
+    return {
+      success: true,
+      data: graph,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getInvisiblePopulation(regionId: string): Promise<ApiResponse<InvisiblePopulationData>> {
+    const data = DEMO_INVISIBLE_POPULATION[regionId] || DEMO_INVISIBLE_POPULATION['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('moderate'),
+    };
+  }
+
+  async getConfidenceMetadata(regionId: string): Promise<ApiResponse<ConfidenceMetadata>> {
+    const data = DEMO_CONFIDENCE_METADATA[regionId] || DEMO_CONFIDENCE_METADATA['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getDataBlindSpots(regionId: string): Promise<ApiResponse<DataBlindSpot[]>> {
+    const data = DEMO_DATA_BLIND_SPOTS[regionId] || DEMO_DATA_BLIND_SPOTS['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getModelCommunityConflicts(regionId: string): Promise<ApiResponse<ModelCommunityConflict[]>> {
+    const data = DEMO_MODEL_COMMUNITY_CONFLICTS[regionId] || DEMO_MODEL_COMMUNITY_CONFLICTS['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('moderate'),
+    };
+  }
+
+  async getEvidenceOverview(regionId: string): Promise<ApiResponse<EvidenceOverview>> {
+    const data = DEMO_EVIDENCE_OVERVIEW[regionId] || DEMO_EVIDENCE_OVERVIEW['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('moderate'),
+    };
+  }
+
+  async optimizeInterventionPortfolios(budget: number, regionId?: string): Promise<ApiResponse<InterventionPortfolio[]>> {
+    const target = regionId || 'TN-CHN';
+    const portfolios = (DEMO_INTERVENTION_PORTFOLIOS[target] || DEMO_INTERVENTION_PORTFOLIOS['TN-CHN']).map((p) => {
+      // Dynamic budget rescale if user changed budget
+      const scale = budget / 1000000;
+      return {
+        ...p,
+        allocated_budget: Math.round(p.allocated_budget * (scale > 0 ? (budget / p.target_budget) * 0.95 : 1)),
+        estimated_population_protected: Math.round(p.estimated_population_protected * Math.sqrt(scale > 0 ? scale : 1)),
+      };
+    });
+
+    return {
+      success: true,
+      data: portfolios,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getCounterfactualScenario(regionId?: string): Promise<ApiResponse<CounterfactualScenarioResult>> {
+    const target = regionId || 'TN-CHN';
+    const data = DEMO_COUNTERFACTUAL_SCENARIOS[target] || DEMO_COUNTERFACTUAL_SCENARIOS['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('moderate'),
+    };
+  }
+
+  async getResilienceLedger(regionId?: string): Promise<ApiResponse<ResilienceLedgerEntry[]>> {
+    const target = regionId || 'TN-CHN';
+    const data = DEMO_RESILIENCE_LEDGER[target] || DEMO_RESILIENCE_LEDGER['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getResponseCapacity(regionId?: string): Promise<ApiResponse<ResponseCapacityData>> {
+    const target = regionId || 'TN-CHN';
+    const data = DEMO_RESPONSE_CAPACITY[target] || DEMO_RESPONSE_CAPACITY['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async getTimeMachineData(regionId?: string): Promise<ApiResponse<TimeMachineData>> {
+    const target = regionId || 'TN-CHN';
+    const data = DEMO_TIME_MACHINE[target] || DEMO_TIME_MACHINE['TN-CHN'];
+    return {
+      success: true,
+      data,
+      metadata: createDemoMeta('high'),
+    };
+  }
+
+  async classifyCommunityReportNLP(text: string): Promise<ApiResponse<{
+    event: string;
+    severity: string;
+    duration: string;
+    location_extracted: string;
+    affected_issue: string;
+  }>> {
+    const lower = text.toLowerCase();
+    let event = 'Climate impact';
+    let affected_issue = 'Civic infrastructure and local welfare';
+    let severity = 'moderate';
+    let duration = 'Recent';
+
+    if (lower.includes('water') || lower.includes('tanker') || lower.includes('drinking') || lower.includes('tap') || lower.includes('dry')) {
+      event = 'Water shortage';
+      affected_issue = 'Water availability & pressure';
+    } else if (lower.includes('heat') || lower.includes('temperature') || lower.includes('hot') || lower.includes('sun') || lower.includes('dizzy')) {
+      event = 'Extreme heat';
+      affected_issue = 'Thermal strain & cooling accessibility';
+    } else if (lower.includes('flood') || lower.includes('waterlog') || lower.includes('drain') || lower.includes('canal') || lower.includes('rain')) {
+      event = 'Flooding';
+      affected_issue = 'Stormwater drainage & road transit';
+    } else if (lower.includes('power') || lower.includes('electricity') || lower.includes('outage') || lower.includes('current')) {
+      event = 'Power outage';
+      affected_issue = 'Distribution feeder continuity';
+    } else if (lower.includes('hospital') || lower.includes('clinic') || lower.includes('faint') || lower.includes('stroke') || lower.includes('sick')) {
+      event = 'Health emergency';
+      affected_issue = 'First-mile emergency care';
+    }
+
+    if (lower.includes('3 days') || lower.includes('three days') || lower.includes('4 days') || lower.includes('week')) {
+      duration = '3 days';
+    } else if (lower.includes('24h') || lower.includes('today') || lower.includes('hours')) {
+      duration = '24 hours';
+    }
+
+    if (lower.includes('emergency') || lower.includes('severe') || lower.includes('critical') || lower.includes('died') || lower.includes('fainted') || lower.includes('collapsed') || lower.includes('no water for 3 days')) {
+      severity = 'High';
+    }
+
+    return {
+      success: true,
+      data: {
+        event,
+        severity,
+        duration,
+        location_extracted: 'Selected community ward',
+        affected_issue,
+      },
+      metadata: createDemoMeta('high'),
+    };
+  }
 }
 
 export class RealDataProvider implements IDataProvider {
@@ -267,7 +477,111 @@ export class RealDataProvider implements IDataProvider {
   async submitCommunityReport(report: Omit<CommunityReport, 'id' | 'timestamp'>): Promise<ApiResponse<CommunityReport>> {
     return apiClient.post('/api/v1/community/reports', report);
   }
+
+  // Real data client with graceful demo fallback
+  async getConsequenceGraph(regionId: string): Promise<ApiResponse<ConsequenceGraphData>> {
+    try {
+      return await apiClient.get(`/api/v1/consequences/${regionId}/graph`);
+    } catch {
+      return demoProvider.getConsequenceGraph(regionId);
+    }
+  }
+
+  async getInvisiblePopulation(regionId: string): Promise<ApiResponse<InvisiblePopulationData>> {
+    try {
+      return await apiClient.get(`/api/v1/invisible-population/${regionId}`);
+    } catch {
+      return demoProvider.getInvisiblePopulation(regionId);
+    }
+  }
+
+  async getConfidenceMetadata(regionId: string): Promise<ApiResponse<ConfidenceMetadata>> {
+    try {
+      return await apiClient.get(`/api/v1/confidence/${regionId}`);
+    } catch {
+      return demoProvider.getConfidenceMetadata(regionId);
+    }
+  }
+
+  async getDataBlindSpots(regionId: string): Promise<ApiResponse<DataBlindSpot[]>> {
+    try {
+      return await apiClient.get(`/api/v1/data-blindspots/${regionId}`);
+    } catch {
+      return demoProvider.getDataBlindSpots(regionId);
+    }
+  }
+
+  async getModelCommunityConflicts(regionId: string): Promise<ApiResponse<ModelCommunityConflict[]>> {
+    try {
+      return await apiClient.get(`/api/v1/model-community-conflicts/${regionId}`);
+    } catch {
+      return demoProvider.getModelCommunityConflicts(regionId);
+    }
+  }
+
+  async getEvidenceOverview(regionId: string): Promise<ApiResponse<EvidenceOverview>> {
+    try {
+      return await apiClient.get(`/api/v1/community/evidence/${regionId}`);
+    } catch {
+      return demoProvider.getEvidenceOverview(regionId);
+    }
+  }
+
+  async optimizeInterventionPortfolios(budget: number, regionId?: string): Promise<ApiResponse<InterventionPortfolio[]>> {
+    try {
+      return await apiClient.post('/api/v1/interventions/portfolios', { budget, region_id: regionId || 'TN-CHN' });
+    } catch {
+      return demoProvider.optimizeInterventionPortfolios(budget, regionId);
+    }
+  }
+
+  async getCounterfactualScenario(regionId?: string): Promise<ApiResponse<CounterfactualScenarioResult>> {
+    try {
+      return await apiClient.post('/api/v1/scenarios/counterfactual', { region_id: regionId || 'TN-CHN' });
+    } catch {
+      return demoProvider.getCounterfactualScenario(regionId);
+    }
+  }
+
+  async getResilienceLedger(regionId?: string): Promise<ApiResponse<ResilienceLedgerEntry[]>> {
+    try {
+      return await apiClient.get(`/api/v1/resilience/ledger/${regionId || 'TN-CHN'}`);
+    } catch {
+      return demoProvider.getResilienceLedger(regionId);
+    }
+  }
+
+  async getResponseCapacity(regionId?: string): Promise<ApiResponse<ResponseCapacityData>> {
+    try {
+      return await apiClient.get(`/api/v1/response-capacity/${regionId || 'TN-CHN'}`);
+    } catch {
+      return demoProvider.getResponseCapacity(regionId);
+    }
+  }
+
+  async getTimeMachineData(regionId?: string): Promise<ApiResponse<TimeMachineData>> {
+    try {
+      return await apiClient.get(`/api/v1/climate/time-machine/${regionId || 'TN-CHN'}`);
+    } catch {
+      return demoProvider.getTimeMachineData(regionId);
+    }
+  }
+
+  async classifyCommunityReportNLP(text: string): Promise<ApiResponse<{
+    event: string;
+    severity: string;
+    duration: string;
+    location_extracted: string;
+    affected_issue: string;
+  }>> {
+    try {
+      return await apiClient.post('/api/v1/community/classify', { text });
+    } catch {
+      return demoProvider.classifyCommunityReportNLP(text);
+    }
+  }
 }
 
 export const demoProvider = new DemoDataProvider();
 export const realProvider = new RealDataProvider();
+

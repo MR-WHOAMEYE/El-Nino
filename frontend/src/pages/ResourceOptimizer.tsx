@@ -1,28 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/appStore';
-import { ResourceOptimizationResult, ResourceAllocationItem } from '../types';
+import {
+  ResourceOptimizationResult,
+  ResourceAllocationItem,
+  InterventionPortfolio,
+  ResponseCapacityData
+} from '../types';
 import { DataMetadataFooter } from '../components/common/DataMetadataFooter';
-import { Coins, CheckCircle, ArrowRight, ShieldCheck, PieChart, Users } from 'lucide-react';
-import { DEMO_RESOURCE_OPTIMIZATION } from '../data/demoData';
+import { ResponseCapacityMap } from '../components/intelligence/ResponseCapacityMap';
+import {
+  Coins,
+  CheckCircle,
+  ArrowRight,
+  ShieldCheck,
+  PieChart,
+  Users,
+  Building2,
+  TrendingUp,
+  Sparkles,
+  Layers
+} from 'lucide-react';
+import {
+  DEMO_RESOURCE_OPTIMIZATION,
+  DEMO_INTERVENTION_PORTFOLIOS,
+  DEMO_RESPONSE_CAPACITY
+} from '../data/demoData';
 
 export const ResourceOptimizer: React.FC = () => {
   const { selectedRegion, getProvider } = useAppStore();
   const provider = getProvider();
 
+  const [activeTab, setActiveTab] = useState<'portfolios' | 'custom_budget' | 'response_matching'>('portfolios');
   const [budget, setBudget] = useState<number>(1000000);
   const [result, setResult] = useState<ResourceOptimizationResult>(DEMO_RESOURCE_OPTIMIZATION);
+  const [portfolios, setPortfolios] = useState<InterventionPortfolio[]>(
+    DEMO_INTERVENTION_PORTFOLIOS['TN-CHN']
+  );
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>('PORT-BALANCED');
+  const [responseCapacity, setResponseCapacity] = useState<ResponseCapacityData>(
+    DEMO_RESPONSE_CAPACITY['TN-CHN']
+  );
   const [loading, setLoading] = useState(false);
 
   const runOptimization = async (targetBudget: number) => {
     try {
       setLoading(true);
-      const res = await provider.optimizeResources({
-        budget: targetBudget,
-        region_id: selectedRegion.id,
-      });
-      if (res.success) {
-        setResult(res.data);
-      }
+      const [optRes, portRes, capRes] = await Promise.all([
+        provider.optimizeResources({ budget: targetBudget, region_id: selectedRegion.id }),
+        provider.optimizeInterventionPortfolios(targetBudget, selectedRegion.id),
+        provider.getResponseCapacity(selectedRegion.id),
+      ]);
+      if (optRes.success) setResult(optRes.data);
+      if (portRes.success) setPortfolios(portRes.data);
+      if (capRes.success) setResponseCapacity(capRes.data);
     } finally {
       setLoading(false);
     }
@@ -58,7 +88,153 @@ export const ResourceOptimizer: React.FC = () => {
         </p>
       </div>
 
-      {/* Budget Selector & Top Impact Cards */}
+      {/* Main Mode Selector Tabs */}
+      <div className="flex items-center gap-2 p-1.5 rounded-[6px] bg-[var(--surface)] border border-[var(--border)] font-mono-numbers text-xs">
+        <button
+          onClick={() => setActiveTab('portfolios')}
+          className={`flex-1 py-2 px-3 rounded-[4px] font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 ${
+            activeTab === 'portfolios'
+              ? 'bg-[var(--brand)] text-white shadow-xs'
+              : 'text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+          }`}
+        >
+          <Sparkles size={14} />
+          <span>⚡ Adaptation Portfolios (Feature 6 & 14)</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('custom_budget')}
+          className={`flex-1 py-2 px-3 rounded-[4px] font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 ${
+            activeTab === 'custom_budget'
+              ? 'bg-[var(--brand)] text-white shadow-xs'
+              : 'text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+          }`}
+        >
+          <Coins size={14} />
+          <span>Custom Contingency Solver</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('response_matching')}
+          className={`flex-1 py-2 px-3 rounded-[4px] font-semibold cursor-pointer transition-colors flex items-center justify-center gap-2 ${
+            activeTab === 'response_matching'
+              ? 'bg-[var(--brand)] text-white shadow-xs'
+              : 'text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+          }`}
+        >
+          <Building2 size={14} />
+          <span>Response Capacity Matching (Feature 15)</span>
+        </button>
+      </div>
+
+      {/* TAB 1: ADAPTATION PORTFOLIOS (Features 6 & 14) */}
+      {activeTab === 'portfolios' && (
+        <div className="space-y-5">
+          {/* 3 Portfolios Comparison Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {portfolios.map((port) => {
+              const isSelected = port.id === selectedPortfolioId;
+              const isBalanced = port.name.includes('Balanced');
+              return (
+                <div
+                  key={port.id}
+                  onClick={() => setSelectedPortfolioId(port.id)}
+                  className={`p-5 rounded-[6px] border cursor-pointer transition-all flex flex-col justify-between ${
+                    isSelected
+                      ? 'border-[var(--brand)] bg-[var(--brand-subtle)] shadow-xs'
+                      : 'border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+                      <span className="text-xs font-bold text-[var(--text)] uppercase tracking-wider">
+                        {port.name}
+                      </span>
+                      {isBalanced && (
+                        <span className="text-[9px] px-2 py-0.5 rounded bg-[var(--brand)] text-white font-mono-numbers font-bold">
+                          RECOMMENDED
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-3">
+                      <div className="text-[10px] uppercase text-[var(--text-muted)]">Target Budget</div>
+                      <div className="text-2xl font-bold font-mono-numbers text-[var(--text)] mt-0.5">
+                        ₹{(port.target_budget / 100000).toFixed(0)}L
+                      </div>
+                      <div className="text-[11px] text-[var(--text-muted)] mt-1">{port.tag}</div>
+                    </div>
+
+                    {/* Metric Gauges */}
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-[var(--border)] font-mono-numbers text-xs">
+                      <div>
+                        <span className="text-[10px] text-[var(--text-muted)] uppercase block">Risk Reduction</span>
+                        <strong className="text-base text-[#4A8C80]">-{port.risk_reduction_percent}%</strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[var(--text-muted)] uppercase block">Equity Benefit</span>
+                        <strong className="text-base text-[var(--brand)]">+{port.equity_benefit_percent}%</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] flex items-center justify-between">
+                    <span>Protected: <strong className="text-[var(--text)]">{port.estimated_population_protected.toLocaleString()}</strong></span>
+                    <span>Confidence: <strong className="text-[var(--brand)]">{port.confidence}%</strong></span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Selected Portfolio Details Breakdown (Feature 6 itemization) */}
+          {(() => {
+            const currentPort = portfolios.find((p) => p.id === selectedPortfolioId) || portfolios[1];
+            return (
+              <div className="border border-[var(--border)] rounded-[6px] bg-[var(--surface)] p-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border)]">
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--text)] uppercase tracking-wider">
+                      Portfolio Itemized Allocation • {currentPort.name}
+                    </h3>
+                    <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                      Cost effectiveness ratio: {currentPort.cost_effectiveness_ratio} • Contingency reserve: ₹{currentPort.reserve_amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <span className="text-[10px] px-2.5 py-1 rounded bg-[var(--surface-2)] text-[var(--text-muted)] font-mono-numbers font-semibold">
+                    Modelled Recommendation
+                  </span>
+                </div>
+
+                <div className="divide-y divide-[var(--border)]">
+                  {currentPort.items.map((item, idx) => (
+                    <div key={idx} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                      <div className="space-y-0.5">
+                        <span className="font-semibold text-[var(--text)]">{item.category}</span>
+                        <p className="text-[11px] text-[var(--text-muted)]">{item.description}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="font-bold font-mono-numbers text-sm text-[var(--text)]">
+                          ₹{(item.amount / 100000).toFixed(2)}L
+                        </span>
+                        <div className="text-[10px] text-[var(--text-muted)] font-mono-numbers">
+                          {((item.amount / currentPort.target_budget) * 100).toFixed(0)}% of portfolio
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* TAB 3: CLIMATE RESPONSE MATCHING (Feature 15) */}
+      {activeTab === 'response_matching' && (
+        <ResponseCapacityMap data={responseCapacity} />
+      )}
+
+      {/* TAB 2: CUSTOM BUDGET ALLOCATION SOLVER (PRESERVED) */}
+      {activeTab === 'custom_budget' && (
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Budget Input & Presets (4 Cols) */}
         <div className="lg:col-span-4 border border-[var(--border)] rounded-[6px] bg-[var(--surface)] p-5 space-y-4">
@@ -173,6 +349,7 @@ export const ResourceOptimizer: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       <DataMetadataFooter
         source="Municipal Disaster Management Allocation Heuristic"

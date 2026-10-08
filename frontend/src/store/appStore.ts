@@ -5,6 +5,8 @@ import { DEMO_REGIONS } from '../data/demoData';
 
 export type ThemeMode = 'dark' | 'light' | 'system';
 
+export type SupportedLanguage = 'en' | 'hi' | 'ta' | 'te' | 'kn' | 'ml';
+
 interface AppState {
   // Theme
   theme: ThemeMode;
@@ -45,9 +47,9 @@ interface AppState {
   activeAlertCount: number;
   setActiveAlertCount: (count: number) => void;
 
-  // Language localization (English / Tamil)
-  language: 'en' | 'ta';
-  setLanguage: (lang: 'en' | 'ta') => void;
+  // Regional Language localization (English / Hindi / Tamil / Telugu / Kannada / Malayalam)
+  language: SupportedLanguage;
+  setLanguage: (lang: SupportedLanguage) => void;
 
   // Time Scrubber (0, 30, 60, 90 days)
   timeScrubberDay: number;
@@ -168,7 +170,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   setActiveAlertCount: (activeAlertCount: number) => set({ activeAlertCount }),
 
   language: 'en',
-  setLanguage: (language: 'en' | 'ta') => set({ language }),
+  setLanguage: (language: SupportedLanguage) => set({ language }),
 
   timeScrubberDay: 0,
   setTimeScrubberDay: (timeScrubberDay: number) => set({ timeScrubberDay }),

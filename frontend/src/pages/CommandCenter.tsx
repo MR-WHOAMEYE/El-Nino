@@ -29,11 +29,17 @@ import {
   ShieldCheck,
   Droplets,
   Thermometer,
-  Heart
+  Heart,
+  Eye,
+  Network,
+  Activity,
+  Compass,
+  FileQuestion
 } from 'lucide-react';
 import { DEMO_REGIONS } from '../data/demoData';
+import { MapLayerType } from '../components/map/LeafletClimateMap';
 
-type DrawerTab = 'drivers' | 'subscores' | 'why' | 'advisor' | 'trend';
+type DrawerTab = 'drivers' | 'subscores' | 'why' | 'advisor' | 'trend' | 'intelligence';
 
 export const CommandCenter: React.FC = () => {
   const navigate = useNavigate();
@@ -55,10 +61,11 @@ export const CommandCenter: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Active drawer tab
-  const [activeTab, setActiveTab] = useState<DrawerTab>('drivers');
+  const [activeTab, setActiveTab] = useState<DrawerTab>('intelligence');
+  const [showIntelligencePanel, setShowIntelligencePanel] = useState(true);
 
   // Active layer for map
-  const [activeLayer, setActiveLayer] = useState<'overall' | 'heat' | 'water' | 'health'>('overall');
+  const [activeLayer, setActiveLayer] = useState<MapLayerType>('overall');
 
   // AI Advisor state
   const [aiQuestion, setAiQuestion] = useState('What should we prioritize right now?');
@@ -355,30 +362,42 @@ export const CommandCenter: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left/Center: Full Bleed Interactive Map (7 Cols on desktop) */}
         <div className="lg:col-span-7 flex flex-col gap-4">
-          {/* Map Layer Toolbar */}
-          <div className="flex items-center justify-between gap-2 p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
-            <div className="flex items-center gap-1.5 text-xs text-[var(--text)] font-medium">
-              <Layers size={14} className="text-[var(--brand)]" />
-              <span>Layer:</span>
-              <div className="flex items-center gap-1.5 ml-1.5">
-                {(['overall', 'heat', 'water', 'health'] as const).map((l) => (
-                  <button
-                    key={l}
-                    onClick={() => setActiveLayer(l)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors capitalize ${
-                      activeLayer === l
-                        ? 'bg-[var(--brand)] text-[var(--bg)] font-semibold'
-                        : 'text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-raised)]'
-                    }`}
-                  >
-                    {l === 'overall' ? 'Composite Risk' : l}
-                  </button>
-                ))}
+          {/* Map Layer Toolbar with Base and Intelligence Layer Toggles */}
+          <div className="flex flex-col gap-2 p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs text-[var(--text)] font-semibold">
+                <Layers size={14} className="text-[var(--brand)]" />
+                <span>Map Intelligence Layers:</span>
+              </div>
+              <div className="text-[11px] font-mono-numbers text-[var(--text-muted)] hidden sm:block">
+                {current.name} Focus
               </div>
             </div>
 
-            <div className="text-[11px] font-mono-numbers text-[var(--text-muted)] hidden sm:block">
-              {current.name} Focus
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {[
+                { id: 'overall', label: 'Composite Risk' },
+                { id: 'heat', label: 'Thermal' },
+                { id: 'water', label: 'Water' },
+                { id: 'consequence', label: '🔗 Consequence Risk' },
+                { id: 'invisible_pop', label: '👥 Invisible Pop' },
+                { id: 'confidence', label: '🛡 Confidence' },
+                { id: 'blind_spots', label: '⚠ Blind Spots' },
+                { id: 'conflict', label: '⚡ Conflicts' },
+                { id: 'resilience_change', label: '📈 Resilience Change' },
+              ].map((l) => (
+                <button
+                  key={l.id}
+                  onClick={() => setActiveLayer(l.id as MapLayerType)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors whitespace-nowrap ${
+                    activeLayer === l.id
+                      ? 'bg-[var(--brand)] text-[var(--bg)] font-semibold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-raised)]'
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -468,6 +487,7 @@ export const CommandCenter: React.FC = () => {
             {/* Navigation Tabs inside Drawer */}
             <div className="flex items-center gap-1.5 border-b border-[var(--border)] pb-2 mb-4 text-xs font-medium overflow-x-auto">
               {[
+                { id: 'intelligence', label: '⚡ Climate Intelligence' },
                 { id: 'drivers', label: 'Top Drivers' },
                 { id: 'subscores', label: 'Sub-scores' },
                 { id: 'why', label: 'Why This Score' },
@@ -488,7 +508,154 @@ export const CommandCenter: React.FC = () => {
               ))}
             </div>
 
-            {/* Tab 1: Top 3 Drivers & Next Action (Default View) */}
+            {/* Tab 0: CLIMATE INTELLIGENCE PANEL (Primary Decision Synthesis) */}
+            {activeTab === 'intelligence' && (
+              <div className="space-y-3.5">
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-[#0E251F] to-[#0A1B16] border border-[#1E463B] space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#1E463B]">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={15} className="text-[#C8DFDB]" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#C8DFDB]">
+                        CLIMATE INTELLIGENCE
+                      </span>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#C8DFDB]/10 text-[#C8DFDB] font-mono-numbers">
+                      Live Multi-Model Synthesis
+                    </span>
+                  </div>
+
+                  {/* Top 4 Core Metrics */}
+                  <div className="grid grid-cols-4 gap-2 text-center p-2.5 rounded-xl bg-[#071713] border border-[#16362E]">
+                    <div>
+                      <div className="text-[9px] uppercase text-[#8FA89F]">Risk</div>
+                      <div className="text-base font-bold font-mono-numbers text-[#E26F5A]">{dynamicRisk}</div>
+                    </div>
+                    <div>
+                      <div className="text-[9px] uppercase text-[#8FA89F]">Vulnerability</div>
+                      <div className="text-base font-bold font-mono-numbers text-[#E5A355]">{current.vulnerability}</div>
+                    </div>
+                    <div>
+                      <div className="text-[9px] uppercase text-[#8FA89F]">Resilience</div>
+                      <div className="text-base font-bold font-mono-numbers text-[#5AA693]">{current.resilience}</div>
+                    </div>
+                    <div>
+                      <div className="text-[9px] uppercase text-[#8FA89F]">Confidence</div>
+                      <div className="text-base font-bold font-mono-numbers text-[#C8DFDB]">71%</div>
+                    </div>
+                  </div>
+
+                  {/* Clickable Quick Navigation Items */}
+                  <div className="space-y-2 text-xs">
+                    {/* 1. Data Blind Spot */}
+                    <div
+                      onClick={() => navigate('/community-intelligence')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#D15A42]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#D15A42] font-bold text-sm">⚠</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Data Blind Spot</span>
+                          <span className="text-[11px] text-[#8FA89F]">Healthcare capacity incomplete (38% gap)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 2. Consequence Chain */}
+                    <div
+                      onClick={() => navigate('/consequence-graph')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">🔗</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Consequence Chain</span>
+                          <span className="text-[11px] text-[#8FA89F]">Heat → Grid → Water → Health (+18% cascade)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 3. Invisible Population */}
+                    <div
+                      onClick={() => navigate('/invisible-population')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">👥</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Invisible Population</span>
+                          <span className="text-[11px] text-[#8FA89F]">18,600 estimated (Outdoor worker & cooling deficit)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 4. Equity Priority */}
+                    <div
+                      onClick={() => navigate('/equity-priorities')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">⚖</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Equity Priority</span>
+                          <span className="text-[11px] text-[#E26F5A] font-semibold">HIGH (Rank #1 in Metropolitan Chennai)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 5. Recommended Intervention */}
+                    <div
+                      onClick={() => navigate('/resource-optimizer')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">💰</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Recommended Intervention</span>
+                          <span className="text-[11px] text-[#8FA89F]">₹10L balanced portfolio (21,400 protected)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 6. Scenario */}
+                    <div
+                      onClick={() => navigate('/scenario-lab')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">🧪</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Counterfactual Scenario</span>
+                          <span className="text-[11px] text-[#5AA693] font-semibold">Simulated: Risk 82 → 61 (-27% reduction)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+
+                    {/* 7. Resilience Ledger */}
+                    <div
+                      onClick={() => navigate('/resilience-ledger')}
+                      className="p-2.5 rounded-xl bg-[#071713] hover:bg-[#0E251F] border border-[#16362E] hover:border-[#C8DFDB]/40 cursor-pointer flex items-center justify-between group transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#C8DFDB]">📈</span>
+                        <div>
+                          <span className="font-semibold text-[#F3F6F1] block">Resilience Ledger</span>
+                          <span className="text-[11px] text-[#8FA89F]">Ward 42 Audit: 48 → 67 (+19 pts observed)</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-[#8FA89F] group-hover:text-[#F3F6F1]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tab 1: Top 3 Drivers & Next Action */}
             {activeTab === 'drivers' && (
               <div className="space-y-4">
                 <div className="space-y-2">

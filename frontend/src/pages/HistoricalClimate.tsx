@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/appStore';
 import { DataMetadataFooter } from '../components/common/DataMetadataFooter';
-import { History, Info, TrendingUp, AlertTriangle } from 'lucide-react';
+import { ClimateTimeMachine } from '../components/intelligence/ClimateTimeMachine';
+import { TimeMachineData } from '../types';
+import { DEMO_TIME_MACHINE } from '../data/demoData';
+import { History, Info, TrendingUp, AlertTriangle, Sparkles, Clock } from 'lucide-react';
 
 export const HistoricalClimate: React.FC = () => {
   const { selectedRegion } = useAppStore();
@@ -54,13 +57,25 @@ export const HistoricalClimate: React.FC = () => {
     },
   ];
 
+  const timeMachineData: TimeMachineData = DEMO_TIME_MACHINE[selectedRegion.id] || DEMO_TIME_MACHINE['TN-CHN'];
+  const [showTimeMachine, setShowTimeMachine] = useState<boolean>(true);
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="border border-[var(--border)] rounded-[6px] bg-[var(--surface)] p-6">
-        <div className="flex items-center gap-2 text-xs font-semibold text-[var(--brand)] font-mono-numbers">
-          <History size={15} />
-          <span>MULTI-YEAR ANALOG REANALYSIS</span>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[var(--brand)] font-mono-numbers">
+            <History size={15} />
+            <span>MULTI-YEAR ANALOG REANALYSIS</span>
+          </div>
+          <button
+            onClick={() => setShowTimeMachine(!showTimeMachine)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[var(--brand-subtle)] border border-[var(--brand)]/30 text-xs font-semibold text-[var(--brand)] cursor-pointer hover:bg-[var(--brand-subtle)]/80 transition-colors"
+          >
+            <Clock size={13} />
+            <span>{showTimeMachine ? 'Hide Time Machine' : 'Launch Climate Time Machine'}</span>
+          </button>
         </div>
         <h1 className="text-2xl font-bold text-[var(--text)] mt-1">
           Historical Climate Analog Comparison
@@ -77,6 +92,11 @@ export const HistoricalClimate: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* FEATURE 10: CLIMATE TIME MACHINE (Multi-decade + Counterfactual) */}
+      {showTimeMachine && (
+        <ClimateTimeMachine data={timeMachineData} />
+      )}
 
       {/* Small-Multiples Line Charts per Year with 2026 Overlay */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
